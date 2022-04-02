@@ -3,24 +3,10 @@
 </template>
 
 <style lang="scss">
+@import "./styles/base";
+@import "./styles/ui";
 // 关掉 scope
-* {
-  margin: 0;
-}
-
-svg {
-  width: 1em;
-  height: 1em;
-  // width: 10px;
-  // height: 10px;
-}
-
-html,
-body,
-#app,
-.common-layout,
-.el-container,
-.el-menu {
-  height: 100%;
+.notification-popper-class {
+  padding: 0 !important;
 }
 </style>
