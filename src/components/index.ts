@@ -6,6 +6,8 @@ import trend from "./trend";
 import notification from "./notification";
 import list from "./list";
 import progress from "./progress";
+import chooseDate from "./chooseDate";
+import chooseCity from "./chooseCity";
 const components = [
   menu,
   chooseIcon,
@@ -14,6 +16,8 @@ const components = [
   notification,
   list,
   progress,
+  chooseDate,
+  chooseCity,
 ];
 
 export default {
