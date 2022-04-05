@@ -119,7 +119,7 @@ let emits = defineEmits(["changeCity", "changeProvince"]);
 // 最终选择的结果
 let result = ref<string>("请选择");
 // 控制弹出层的显示
-let visible = ref<boolean>(true);
+let visible = ref<boolean>(false);
 // 单选框的值 按城市还是按省份选择
 let radioValue = ref<string>("按城市");
 // 下拉框的值 搜索下拉框

@@ -8,6 +8,7 @@ import list from "./list";
 import progress from "./progress";
 import chooseDate from "./chooseDate";
 import chooseCity from "./chooseCity";
+import calendar from "./calendar";
 const components = [
   menu,
   chooseIcon,
@@ -18,6 +19,7 @@ const components = [
   progress,
   chooseDate,
   chooseCity,
+  calendar,
 ];
 
 export default {
