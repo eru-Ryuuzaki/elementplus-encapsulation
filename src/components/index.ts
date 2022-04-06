@@ -9,6 +9,9 @@ import progress from "./progress";
 import chooseDate from "./chooseDate";
 import chooseCity from "./chooseCity";
 import calendar from "./calendar";
+import form from "./form";
+import modalForm from "./modalForm";
+import table from "./table";
 const components = [
   menu,
   chooseIcon,
@@ -20,6 +23,9 @@ const components = [
   chooseDate,
   chooseCity,
   calendar,
+  form,
+  modalForm,
+  table,
 ];
 
 export default {
