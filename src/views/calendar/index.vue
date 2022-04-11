@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { DateClickArg } from "@fullcalendar/interaction";
 // import { DateClickArg } from "_@fullcalendar_interaction@5.10.1@@fullcalendar/interaction";
 import { EventItem } from "../../components/calendar/src/types";
 import { ref } from "vue";
@@ -25,8 +26,8 @@ let events = ref<EventItem[]>([
     end: "2021-11-15 16:00:00",
   },
 ]);
-// let dateClick = (info: DateClickArg) => {
-let dateClick = (info: any) => {
+let dateClick = (info: DateClickArg) => {
+  // let dateClick = (info: any) => {
   let event = {
     start: `${info.dateStr} 12:00:00`,
     end: `${info.dateStr} 13:00:00`,
