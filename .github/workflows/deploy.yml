@@ -1,31 +1,17 @@
-name: github actions build and deploy gh-pages
+name: deploy elementplus-encapsulation
 on:
-  push: 
+  push:
     branches:
       - master
 jobs:
-  build_and_deploy:
+  deploy-githubpage:
     runs-on: ubuntu-latest
-
     steps:
-       # 1. 获取源码， 这里需要将仓库代码检出到虚拟机实例中
-      - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run build
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
         with:
-        # 来自官网：如果您正在使用actions/checkout@v2，那么在大多数情况下，您必须将持久凭证设置为false，才能使部署正确工作
-          persist-credentials: false
-      
-      # 2. 执行 vue 项目中的 依赖包安装和构建
-      - name: Install and Build 🔧
-        run: |
-          npm install
-          npm run build
-        
-      # 3. 将打包后的代码部署到 gh-pages 分支
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@3.5.7
-        with:
-          # 为了让 GitHub触发重新构建页面，您必须使用存储库提供的GitHub令牌来提供操作, GITHUB_TOKEN 是系统默认提供的  不需要单独配置环境变量
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages 
-          FOLDER: dist 
+          github_token: ${{ secrets.DEPLOY_MY_ELEPLUS }}
+          publish_dir: ./dist
