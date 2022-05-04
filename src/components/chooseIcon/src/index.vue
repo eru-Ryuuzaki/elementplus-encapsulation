@@ -23,7 +23,7 @@
 
 <script lang="ts" setup>
 import * as ElIcons from "@element-plus/icons";
-import { watch, ref } from "vue";
+import { ref } from "vue";
 import { toLine } from "../../../utils";
 import { useCopy } from "../../../hooks/useCopy";
 
