@@ -11,7 +11,7 @@
 let props = defineProps<{
   collapse: boolean;
 }>();
-
+// 侧边栏菜单
 let data = [
   {
     icon: "HomeFilled",

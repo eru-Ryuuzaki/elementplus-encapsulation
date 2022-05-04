@@ -5,9 +5,9 @@ import ElementPlus from "element-plus";
 import "element-plus/dist/index.css";
 import * as Icons from "@element-plus/icons";
 import { toLine } from "./utils";
-// import mUI from "./components";
-import mUI from "../my-ui/my-element-components.es.js";
-import "../my-ui/style.css";
+import mUI from "./components";
+// import mUI from "../my-ui/my-element-components.es.js";
+// import "../my-ui/style.css";
 import "./mock";
 
 const app = createApp(App);
