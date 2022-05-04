@@ -12,6 +12,7 @@ import calendar from "./calendar";
 import form from "./form";
 import modalForm from "./modalForm";
 import table from "./table";
+import chooseTime from "./chooseTime";
 const components = [
   menu,
   chooseIcon,
@@ -26,6 +27,7 @@ const components = [
   form,
   modalForm,
   table,
+  chooseTime,
 ];
 
 export default {
