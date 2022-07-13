@@ -44,6 +44,7 @@ import allAreas from "../lib/pca-code.json";
 export interface AreaItem {
   name: string;
   code: string;
+  // 递归！
   children?: AreaItem[];
 }
 
@@ -71,57 +72,48 @@ let selectArea = ref<AreaItem[]>([]);
 let emits = defineEmits(["change"]);
 
 // 监听选择省份
-watch(
-  () => province.value,
-  (val) => {
-    if (val) {
-      let cities = areas.value.find((item) => item.code === province.value)!
-        .children!;
-      selectCity.value = cities;
-    }
-    // 一旦省份发生变化，后面的都重置
-    city.value = "";
-    area.value = "";
+watch(province, (val) => {
+  if (val) {
+    let cities = areas.value.find((item) => item.code === province.value)!
+      .children!;
+    selectCity.value = cities;
   }
-);
+  // 一旦省份发生变化，后面的都重置
+  city.value = "";
+  area.value = "";
+});
 // 监听选择城市
-watch(
-  () => city.value,
-  (val) => {
-    if (val) {
-      let area = selectCity.value.find((item) => item.code === city.value)!
-        .children!;
-      selectArea.value = area;
-    }
-    area.value = "";
+watch(city, (val) => {
+  if (val) {
+    let area = selectCity.value.find((item) => item.code === city.value)!
+      .children!;
+    selectArea.value = area;
   }
-);
+  area.value = "";
+});
 
 // 监听选择区域
-watch(
-  () => area.value,
-  (val) => {
-    if (val) {
-      let provinceData: Data = {
-        code: province.value,
-        name: allAreas.find((item) => item.code === province.value)!.name,
-      };
-      let cityData: Data = {
-        code: city.value,
-        name: selectCity.value.find((item) => item.code === city.value)!.name,
-      };
-      let areaData: Data = {
-        code: val,
-        name: selectArea.value.find((item) => item.code === val)!.name,
-      };
-      emits("change", {
-        province: provinceData,
-        city: cityData,
-        area: areaData,
-      });
-    }
+watch(area, (val) => {
+  if (val) {
+    let provinceData: Data = {
+      code: province.value,
+      name: allAreas.find((item) => item.code === province.value)!.name,
+    };
+    let cityData: Data = {
+      code: city.value,
+      name: selectCity.value.find((item) => item.code === city.value)!.name,
+    };
+    let areaData: Data = {
+      code: val,
+      name: selectArea.value.find((item) => item.code === val)!.name,
+    };
+    emits("change", {
+      province: provinceData,
+      city: cityData,
+      area: areaData,
+    });
   }
-);
+});
 </script>
 
 <style lang="scss" scoped>

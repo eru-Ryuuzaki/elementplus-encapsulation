@@ -1,6 +1,11 @@
 <template>
   <div class="trend">
-    <div class="text" :style="{ color: textColor }">
+    <div
+      class="text"
+      :style="` color: ${
+        props.type === 'up' ? props.upTextColor : props.downTextColor
+      } `"
+    >
       <slot v-if="slots.default"></slot>
       <div v-else>{{ text }}</div>
     </div>
@@ -74,10 +79,10 @@ let props = defineProps({
 // 获取插槽内容
 let slots = useSlots();
 
-// 文字颜色
-let textColor = computed(() => {
-  return props.type === "up" ? props.upTextColor : props.downTextColor;
-});
+// 文字颜色（变量不发生变化的，感觉不需要用计算属性）
+// let textColor = computed(() => {
+//   return props.type === "up" ? props.upTextColor : props.downTextColor;
+// });
 </script>
 
 <style lang="scss" scoped>
