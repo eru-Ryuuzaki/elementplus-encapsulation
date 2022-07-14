@@ -25,7 +25,7 @@
 import * as ElIcons from "@element-plus/icons";
 import { ref } from "vue";
 import { toLine } from "../../../utils";
-import { useCopy } from "../../../hooks/useCopy";
+import { useCopy } from "../../../hooks";
 
 let props = defineProps<{
   // 弹出框的标题

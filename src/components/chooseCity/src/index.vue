@@ -1,12 +1,7 @@
 <template>
-  <el-popover
-    v-model:visible="visible"
-    placement="bottom-start"
-    :width="430"
-    trigger="click"
-  >
+  <!-- popover trigger事件不生效，不能和 visible 同时控制 -->
+  <el-popover v-model:visible="visible" placement="bottom-start" :width="430">
     <template #reference>
-      <!-- trigger="click" 不生效，要加这个自定义方法，有点奇怪 -->
       <div class="result" @click="visible = !visible">
         <div>{{ result }}</div>
         <div>
@@ -52,7 +47,7 @@
             {{ item }}
           </div>
         </div>
-        <el-scrollbar max-height="300px">
+        <el-scrollbar max-height="300px" @scroll="markKey">
           <template v-for="(value, key) in cities" :key="key">
             <el-row style="margin-bottom: 10px" :id="key">
               <el-col :span="2">{{ key }}:</el-col>
@@ -108,10 +103,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch, nextTick } from "vue";
 import city from "../lib/city";
 import { City } from "./types";
 import province from "../lib/province.json";
+import { useThrottle } from "../../../hooks";
+
+interface ScrollParams {
+  scrollLeft: number;
+  scrollTop: number;
+}
 
 // 分发事件
 let emits = defineEmits(["changeCity", "changeProvince"]);
@@ -149,14 +150,80 @@ let clickProvince = (item: string) => {
   emits("changeProvince", item);
 };
 
+const cityKeys = Object.keys(city.cities);
+// console.log(cityKeys);
+// const cityKeysNodes = cityKeys.map((item) => {
+//   return document.getElementById(item);
+// });
+// console.log(cityKeysNodes);
+const provinceKeys = Object.keys(province);
+let nowKeysNodes: (HTMLElement | null)[] = [];
+// const provinceKeyNodes = provinceKeys.map((item) => {
+//   return document.getElementById(item);
+// });
+// console.log(provinceKeyNodes);
+
+// 滚动的时候，上面的 key 跟着高亮
+// let markKey = ({ scrollTop }: ScrollParams) => {
+//   console.log("scrollTop: ", scrollTop);
+// };
+
+let markKey = useThrottle(async ({ scrollTop }: ScrollParams) => {
+  // console.log("scrollTop: ", scrollTop);
+  // await nextTick();
+  for (let i = 0; i < nowKeysNodes.length; i++) {
+    if (
+      nowKeysNodes[i]?.offsetTop &&
+      nowKeysNodes[i]?.offsetTop! >= scrollTop
+    ) {
+      console.log(nowKeysNodes[i]);
+      for (let j = 0; j < nowKeysNodes.length; j++) {
+        nowKeysNodes[j]!.style.backgroundColor! = "while";
+      }
+      nowKeysNodes[i]!.style.backgroundColor! = "#409eff";
+
+      break;
+    }
+  }
+}, 1000);
+
 // 点击字母区域
-let clickChat = (item: string) => {
+// 通过获取 id 跳转
+const clickChat = (item: string) => {
+  console.log(item);
   let el = document.getElementById(item);
+  // console.log(el!.getBoundingClientRect().top);
   if (el) el.scrollIntoView();
+  // console.log("offsetTop: ", el!.offsetTop);
 };
+
+watch(
+  () => [visible.value, radioValue.value],
+  async ([visible, radioValue]) => {
+    if (!visible) return;
+    // 要等 dom 结点更新完再获取
+    await nextTick();
+    if (radioValue == "按城市") {
+      nowKeysNodes = cityKeys.map((item) => {
+        return document.getElementById(item);
+      });
+    } else {
+      nowKeysNodes = provinceKeys.map((item) => {
+        return document.getElementById(item);
+      });
+    }
+    // console.log(nowKeysNodes);
+  }
+);
+
 // 自定义搜索过滤
 let filterMethod = (val: string) => {
+  // 变成深度只有 2 的数组了
   let values = Object.values(cities.value).flat(2);
+  // console.log(
+  //   JSON.stringify(Object.values(cities.value)),
+  //   JSON.stringify(values)
+  // );
   if (val === "") {
     options.value = values;
   } else {

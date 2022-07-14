@@ -20,7 +20,7 @@
               <div class="content">
                 <div v-if="item1.title" class="title">
                   <div>{{ item1.title }}</div>
-                  <el-tag v-if="item1.tag" size="mini" :type="item1.tagType">{{
+                  <el-tag v-if="item1.tag" size="small" :type="item1.tagType">{{
                     item1.tag
                   }}</el-tag>
                 </div>
