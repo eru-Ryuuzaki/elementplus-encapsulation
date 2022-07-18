@@ -248,6 +248,7 @@ let filterMethod = (val: string) => {
 };
 // 下拉框选择
 let changeSelect = (val: number) => {
+  visible.value = false;
   let city = allCity.value.find((item) => item.id === val)!;
   result.value = city.name;
   if (radioValue.value === "按城市") {
