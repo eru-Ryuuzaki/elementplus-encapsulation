@@ -9,4 +9,7 @@
 .notification-popper-class {
   padding: 0 !important;
 }
+// .fc-daygrid-day-events {
+//   overflow: auto;
+// }
 </style>
