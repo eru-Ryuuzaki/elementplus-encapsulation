@@ -76,7 +76,7 @@
             {{ item }}
           </div>
         </div>
-        <el-scrollbar max-height="300px">
+        <el-scrollbar max-height="300px" @scroll="markKey">
           <template
             v-for="(item, index) in Object.values(provinces)"
             :key="index"
@@ -108,11 +108,15 @@ import city from "../lib/city";
 import { City } from "./types";
 import province from "../lib/province.json";
 import { useThrottle } from "../../../hooks";
+// import { ElScrollbar } from "element-plus";
+
+// const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>();
 
 interface ScrollParams {
   scrollLeft: number;
   scrollTop: number;
 }
+let scrollFlag = true;
 
 // 分发事件
 let emits = defineEmits(["changeCity", "changeProvince"]);
@@ -151,50 +155,53 @@ let clickProvince = (item: string) => {
 };
 
 const cityKeys = Object.keys(city.cities);
-// console.log(cityKeys);
-// const cityKeysNodes = cityKeys.map((item) => {
-//   return document.getElementById(item);
-// });
-// console.log(cityKeysNodes);
 const provinceKeys = Object.keys(province);
-let nowKeysNodes: (HTMLElement | null)[] = [];
-// const provinceKeyNodes = provinceKeys.map((item) => {
-//   return document.getElementById(item);
-// });
-// console.log(provinceKeyNodes);
-
-// 滚动的时候，上面的 key 跟着高亮
-// let markKey = ({ scrollTop }: ScrollParams) => {
-//   console.log("scrollTop: ", scrollTop);
-// };
+let nowContentNodes: (HTMLElement | null)[] = [];
+let nowKeyNodes: HTMLCollectionOf<Element> | null = null;
 
 let markKey = useThrottle(async ({ scrollTop }: ScrollParams) => {
   // console.log("scrollTop: ", scrollTop);
+  if (!scrollFlag) {
+    scrollFlag = true;
+    return;
+  }
   // await nextTick();
-  for (let i = 0; i < nowKeysNodes.length; i++) {
+  for (let i = 0; i < nowContentNodes.length; i++) {
     if (
-      nowKeysNodes[i]?.offsetTop &&
-      nowKeysNodes[i]?.offsetTop! >= scrollTop
+      nowContentNodes[i]?.offsetTop &&
+      nowContentNodes[i]?.offsetTop! >= scrollTop
     ) {
-      console.log(nowKeysNodes[i]);
-      for (let j = 0; j < nowKeysNodes.length; j++) {
-        nowKeysNodes[j]!.style.backgroundColor! = "while";
+      // console.log(nowContentNodes[i]);
+      for (let j = 0; nowKeyNodes && j < nowKeyNodes.length; j++) {
+        // @ts-ignore
+        nowKeyNodes[j]!.style.backgroundColor! = "white";
       }
-      nowKeysNodes[i]!.style.backgroundColor! = "#409eff";
+      // @ts-ignore
+      nowKeyNodes[i]!.style.backgroundColor! = "#409eff";
 
       break;
     }
   }
-}, 1000);
+}, 200);
 
 // 点击字母区域
 // 通过获取 id 跳转
-const clickChat = (item: string) => {
-  console.log(item);
+const clickChat = async (item: string) => {
+  // 点击按钮的话，就不触发滚动事件
+  scrollFlag = false;
   let el = document.getElementById(item);
-  // console.log(el!.getBoundingClientRect().top);
-  if (el) el.scrollIntoView();
-  // console.log("offsetTop: ", el!.offsetTop);
+  if (el) {
+    for (let i = 0; i < nowContentNodes.length; i++) {
+      if (nowContentNodes[i] == el) {
+        // @ts-ignore
+        nowKeyNodes[i]!.style.backgroundColor! = "#409eff";
+      } else {
+        // @ts-ignore
+        nowKeyNodes[i]!.style.backgroundColor! = "white";
+      }
+    }
+    el.scrollIntoView();
+  }
 };
 
 watch(
@@ -204,15 +211,18 @@ watch(
     // 要等 dom 结点更新完再获取
     await nextTick();
     if (radioValue == "按城市") {
-      nowKeysNodes = cityKeys.map((item) => {
+      nowContentNodes = cityKeys.map((item) => {
         return document.getElementById(item);
       });
+      nowKeyNodes = document.getElementsByClassName("city-item");
     } else {
-      nowKeysNodes = provinceKeys.map((item) => {
+      nowContentNodes = provinceKeys.map((item) => {
         return document.getElementById(item);
       });
+      nowKeyNodes = document.getElementsByClassName("province-item");
     }
-    // console.log(nowKeysNodes);
+    // @ts-ignore
+    nowKeyNodes[0]!.style.backgroundColor! = "#409eff";
   }
 );
 
@@ -220,10 +230,6 @@ watch(
 let filterMethod = (val: string) => {
   // 变成深度只有 2 的数组了
   let values = Object.values(cities.value).flat(2);
-  // console.log(
-  //   JSON.stringify(Object.values(cities.value)),
-  //   JSON.stringify(values)
-  // );
   if (val === "") {
     options.value = values;
   } else {
