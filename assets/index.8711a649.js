@@ -1,0 +1,1 @@
+import{d as a,b as r,u as s,r as c,o as t}from"./element-plus.2ca2806b.js";const m=a({setup(_){let o=e=>{console.log(e)};return(e,l)=>{const n=c("m-choose-area");return t(),r(n,{onChange:s(o)},null,8,["onChange"])}}});export{m as default};

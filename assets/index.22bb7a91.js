@@ -1,0 +1,1 @@
+import{_ as e}from"./components-util.97853a3d.js";import{b as r,r as c,o as t}from"./element-plus.2ca2806b.js";import"./element-plus-icons.5d39fc6b.js";import"./vendor.fe2c5918.js";const n={};function s(_,m){const o=c("m-choose-city");return t(),r(o)}var d=e(n,[["render",s]]);export{d as default};
