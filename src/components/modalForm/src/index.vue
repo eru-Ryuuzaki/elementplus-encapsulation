@@ -29,60 +29,65 @@
   </div>
 </template>
 
-<script lang='ts' setup>
-import { PropType, ref, watch } from 'vue'
-import { FormOptions } from '../../form/src/types/types'
+<script lang="ts" setup>
+import { PropType, ref, watch } from "vue";
+import { FormOptions } from "../../form/src/types/types";
 let props = defineProps({
   // 是否只在可视区域内滚动
   isScroll: {
     type: Boolean,
-    default: false
+    default: false,
   },
   visible: {
     type: Boolean,
-    default: false
+    default: false,
   },
   options: {
     type: Array as PropType<FormOptions[]>,
-    required: true
+    required: true,
   },
   onChange: {
-    type: Function
+    type: Function,
   },
   beforeUpload: {
-    type: Function
+    type: Function,
   },
   onPreview: {
-    type: Function
+    type: Function,
   },
   onRemove: {
-    type: Function
+    type: Function,
   },
   beforeRemove: {
-    type: Function
+    type: Function,
   },
   onSuccess: {
-    type: Function
+    type: Function,
   },
   onExceed: {
-    type: Function
+    type: Function,
   },
-})
-let emits = defineEmits(['update:visible'])
+});
+let emits = defineEmits(["update:visible"]);
 
 // 表单实例
-let form = ref()
+let form = ref();
 
 // 弹出框的显示与隐藏
-let dialogVisible = ref<boolean>(props.visible)
+let dialogVisible = ref<boolean>(props.visible);
 
-watch(() => props.visible, val => {
-  dialogVisible.value = val
-})
-watch(() => dialogVisible.value, val => {
-  emits('update:visible', val)
-})
+watch(
+  () => props.visible,
+  (val) => {
+    dialogVisible.value = val;
+  }
+);
+watch(
+  () => dialogVisible.value,
+  (val) => {
+    emits("update:visible", val);
+  }
+);
 </script>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

@@ -66,133 +66,141 @@
   </el-form>
 </template>
 
-<script lang='ts' setup>
-import { PropType, ref, onMounted, watch, nextTick } from 'vue'
-import { FormInstance, FormOptions } from './types/types'
-import cloneDeep from 'lodash/cloneDeep'
-import E from "wangeditor"
+<script lang="ts" setup>
+import { PropType, ref, onMounted, watch, nextTick } from "vue";
+import { FormInstance, FormOptions } from "./types/types";
+import cloneDeep from "lodash/cloneDeep";
+import E from "wangeditor";
 
-
-
-let emits = defineEmits(['on-preview', 'on-remove', 'on-success', 'on-error', 'on-progress', 'on-change', 'before-upload', 'before-remove', 'on-exceed'])
+let emits = defineEmits([
+  "on-preview",
+  "on-remove",
+  "on-success",
+  "on-error",
+  "on-progress",
+  "on-change",
+  "before-upload",
+  "before-remove",
+  "on-exceed",
+]);
 
 let props = defineProps({
   // 表单的配置项
   options: {
     type: Array as PropType<FormOptions[]>,
-    required: true
+    required: true,
   },
   // 用户自定义上传方法
   httpRequest: {
-    type: Function
-  }
-})
+    type: Function,
+  },
+});
 
-let model = ref<any>(null)
-let rules = ref<any>(null)
-let form = ref<FormInstance | null>()
-let edit = ref()
+let model = ref<any>(null);
+let rules = ref<any>(null);
+let form = ref<FormInstance | null>();
+let edit = ref();
 
 // 初始化表单
 let initForm = () => {
   if (props.options && props.options.length) {
-    let m: any = {}
-    let r: any = {}
+    let m: any = {};
+    let r: any = {};
     props.options.map((item: FormOptions) => {
-      m[item.prop!] = item.value
-      r[item.prop!] = item.rules
-      if (item.type === 'editor') {
+      m[item.prop!] = item.value;
+      r[item.prop!] = item.rules;
+      if (item.type === "editor") {
         // 初始化富文本
         nextTick(() => {
-          if (document.getElementById('editor')) {
-            const editor = new E('#editor')
-            editor.config.placeholder = item.placeholder!
-            editor.create()
+          if (document.getElementById("editor")) {
+            const editor = new E("#editor");
+            editor.config.placeholder = item.placeholder!;
+            editor.create();
             // 初始化富文本的内容
-            editor.txt.html(item.value)
+            editor.txt.html(item.value);
             editor.config.onchange = (newHtml: string) => {
-              model.value[item.prop!] = newHtml
-            }
-            edit.value = editor
+              model.value[item.prop!] = newHtml;
+            };
+            edit.value = editor;
           }
-        })
+        });
       }
-    })
-    model.value = cloneDeep(m)
-    rules.value = cloneDeep(r)
+    });
+    model.value = cloneDeep(m);
+    rules.value = cloneDeep(r);
   }
-}
+};
 
 // 重置表单
 let resetFields = () => {
   // 重置element-plus的表单
-  form.value!.resetFields()
+  form.value!.resetFields();
   // 重置富文本编辑器的内容
   // 获取到富文本的配置项
   if (props.options && props.options.length) {
-    let editorItem = props.options.find(item => item.type === 'editor')!
-    edit.value.txt.html(editorItem.value)
+    let editorItem = props.options.find((item) => item.type === "editor")!;
+    edit.value.txt.html(editorItem.value);
   }
-}
+};
 // 表单验证方法
 let validate = () => {
-  return form.value!.validate
-}
+  return form.value!.validate;
+};
 // 获取表单数据
 let getFormData = () => {
-  return model.value
-}
+  return model.value;
+};
 
 // 分发方法
 defineExpose({
   resetFields,
   validate,
-  getFormData
-})
+  getFormData,
+});
 
 onMounted(() => {
-  initForm()
-})
+  initForm();
+});
 // 监听父组件传递进来的options
-watch(() => props.options, () => {
-  initForm()
-}, { deep: true })
-
+watch(
+  () => props.options,
+  () => {
+    initForm();
+  },
+  { deep: true }
+);
 
 // 上传组件的所有方法
 let onPreview = (file: File) => {
-  emits('on-preview', file)
-}
+  emits("on-preview", file);
+};
 let onRemove = (file: File, fileList: FileList) => {
-  emits('on-remove', { file, fileList })
-}
+  emits("on-remove", { file, fileList });
+};
 let onSuccess = (response: any, file: File, fileList: FileList) => {
   // 上传图片成功 给表单上传项赋值
-  let uploadItem = props.options.find(item => item.type === 'upload')!
-  model.value[uploadItem.prop!] = { response, file, fileList }
-  emits('on-success', { response, file, fileList })
-}
+  let uploadItem = props.options.find((item) => item.type === "upload")!;
+  model.value[uploadItem.prop!] = { response, file, fileList };
+  emits("on-success", { response, file, fileList });
+};
 let onError = (err: any, file: File, fileList: FileList) => {
-  emits('on-error', { err, file, fileList, })
-}
+  emits("on-error", { err, file, fileList });
+};
 let onProgress = (event: any, file: File, fileList: FileList) => {
-  emits('on-progress', { event, file, fileList })
-}
+  emits("on-progress", { event, file, fileList });
+};
 let onChange = (file: File, fileList: FileList) => {
-  emits('on-change', { file, fileList })
-}
+  emits("on-change", { file, fileList });
+};
 let beforeUpload = (file: File) => {
-  emits('before-upload', file)
-}
+  emits("before-upload", file);
+};
 let beforeRemove = (file: File, fileList: FileList) => {
-  emits('before-remove', { file, fileList })
-}
+  emits("before-remove", { file, fileList });
+};
 let onExceed = (files: File, fileList: FileList) => {
-  emits('on-exceed', { files, fileList })
-}
-
-
+  emits("on-exceed", { files, fileList });
+};
 </script>
 
-<style lang='scss' scoped>
-</style>
+<style lang="scss" scoped></style>

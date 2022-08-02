@@ -1,16 +1,16 @@
 export interface TableOptions {
   // 字段名称
-  prop?: string,
+  prop?: string;
   // 表头
-  label: string,
+  label: string;
   // 对应列的宽度
-  width?: string | number,
+  width?: string | number;
   // 对齐方式
-  align?: 'left' | 'center' | 'right',
+  align?: "left" | "center" | "right";
   // 自定义列模板的插槽名
-  slot?: string,
+  slot?: string;
   // 是否是操作项
-  action?: boolean,
+  action?: boolean;
   // 是否可以编辑
-  editable?: boolean
+  editable?: boolean;
 }

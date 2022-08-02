@@ -58,11 +58,11 @@ let data = [
     name: "进度条",
     index: "/progress",
   },
-  {
-    icon: "ScaleToOriginal",
-    name: "日历",
-    index: "/calendar",
-  },
+  // {
+  //   icon: "ScaleToOriginal",
+  //   name: "日历",
+  //   index: "/calendar",
+  // },
   {
     icon: "Setting",
     name: "表单",

@@ -36,51 +36,55 @@
       </el-popover>
     </template>
     <template #editRow="scope">
-      <el-button size="small" type="primary" @click="sure(scope.scope)">确认</el-button>
+      <el-button size="small" type="primary" @click="sure(scope.scope)"
+        >确认</el-button
+      >
       <el-button size="small" type="danger">取消</el-button>
     </template>
     <template #action="scope">
-      <el-button size="small" type="primary" @click="edit(scope.scope)">编辑</el-button>
+      <el-button size="small" type="primary" @click="edit(scope.scope)"
+        >编辑</el-button
+      >
       <el-button size="small" type="danger">删除</el-button>
     </template>
   </m-table>
 </template>
 
-<script lang='ts' setup>
-import { TableOptions } from '../../components/table/src/types'
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+<script lang="ts" setup>
+import { TableOptions } from "../../components/table/src/types";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 
 let options: TableOptions[] = [
   {
-    prop: 'date',
-    label: '日期',
+    prop: "date",
+    label: "日期",
     // width: '180',
-    align: 'center',
-    slot: 'date',
-    editable: true
+    align: "center",
+    slot: "date",
+    editable: true,
   },
   {
-    prop: 'name',
-    label: '姓名',
+    prop: "name",
+    label: "姓名",
     // width: '180',
-    align: 'center',
-    slot: 'name'
+    align: "center",
+    slot: "name",
   },
   {
-    prop: 'address',
-    label: '地址',
-    align: 'center',
-    editable: true
+    prop: "address",
+    label: "地址",
+    align: "center",
+    editable: true,
   },
   {
-    label: '操作',
+    label: "操作",
     action: true,
-    align: 'center'
-  }
-]
-let tableData = ref<any[]>([])
-let editRowIndex = ref<string>('')
+    align: "center",
+  },
+];
+let tableData = ref<any[]>([]);
+let editRowIndex = ref<string>("");
 let svg = `
         <path class="path" d="
           M 30 15
@@ -90,7 +94,7 @@ let svg = `
           A 15 15, 0, 1, 1, 27.99 7.5
           L 15 15
         " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
-      `
+      `;
 // setTimeout(() => {
 // tableData.value = [
 //   {
@@ -116,47 +120,48 @@ let svg = `
 // ]
 // }, 3000)
 
-let current = ref<number>(1)
-let pageSize = ref<number>(10)
-let total = ref<number>(0)
+let current = ref<number>(1);
+let pageSize = ref<number>(10);
+let total = ref<number>(0);
 let getData = () => {
-  axios.post('/api/list', {
-    current: current.value,
-    pageSize: pageSize.value,
-  }).then((res: any) => {
-    if (res.data.code === '200') {
-      tableData.value = res.data.data.rows
-      total.value = res.data.data.total
-      console.log(res.data.data)
-    }
-  })
-}
+  axios
+    .post("/api/list", {
+      current: current.value,
+      pageSize: pageSize.value,
+    })
+    .then((res: any) => {
+      if (res.data.code === "200") {
+        tableData.value = res.data.data.rows;
+        total.value = res.data.data.total;
+        console.log(res.data.data);
+      }
+    });
+};
 let handleSizeChange = (val: number) => {
-  pageSize.value = val
-  getData()
-}
+  pageSize.value = val;
+  getData();
+};
 let handleCurrentChange = (val: number) => {
-  current.value = val
-  getData()
-}
+  current.value = val;
+  getData();
+};
 onMounted(() => {
-  getData()
-})
-
+  getData();
+});
 
 let edit = (scope: any) => {
   // console.log(scope)
-  editRowIndex.value = 'edit'
-}
+  editRowIndex.value = "edit";
+};
 let sure = (scope: any) => {
-  console.log(scope)
-}
+  console.log(scope);
+};
 let confirm = (scope: any) => {
   // console.log(scope)
-}
+};
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 svg {
   width: 1em;
   height: 1em;

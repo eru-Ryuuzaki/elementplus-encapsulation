@@ -1,20 +1,20 @@
 export type RuleType =
-  | 'string'
-  | 'number'
-  | 'boolean'
-  | 'method'
-  | 'regexp'
-  | 'integer'
-  | 'float'
-  | 'array'
-  | 'object'
-  | 'enum'
-  | 'date'
-  | 'url'
-  | 'hex'
-  | 'email'
-  | 'pattern'
-  | 'any';
+  | "string"
+  | "number"
+  | "boolean"
+  | "method"
+  | "regexp"
+  | "integer"
+  | "float"
+  | "array"
+  | "object"
+  | "enum"
+  | "date"
+  | "url"
+  | "hex"
+  | "email"
+  | "pattern"
+  | "any";
 
 export interface ValidateOption {
   // whether to suppress internal warning
@@ -58,14 +58,14 @@ export interface RuleItem {
     value: Value,
     callback: (error?: string | Error) => void,
     source: Values,
-    options: ValidateOption,
+    options: ValidateOption
   ) => void | Promise<void>;
   validator?: (
     rule: InternalRuleItem,
     value: Value,
     callback: (error?: string | Error) => void,
     source: Values,
-    options: ValidateOption,
+    options: ValidateOption
   ) => SyncValidateResult | void;
 }
 
@@ -91,7 +91,7 @@ export type ExecuteRule = (
   source: Values,
   errors: string[],
   options: ValidateOption,
-  type?: string,
+  type?: string
 ) => void;
 
 /**
@@ -109,7 +109,7 @@ export type ExecuteValidator = (
   value: Value,
   callback: (error?: string[]) => void,
   source: Values,
-  options: ValidateOption,
+  options: ValidateOption
 ) => void;
 
 // >>>>> Message
@@ -189,7 +189,7 @@ export type ValidateFieldsError = Record<string, ValidateError[]>;
 
 export type ValidateCallback = (
   errors: ValidateError[] | null,
-  fields: ValidateFieldsError | Values,
+  fields: ValidateFieldsError | Values
 ) => void;
 
 export interface RuleValuePackage {
@@ -199,9 +199,9 @@ export interface RuleValuePackage {
   field: string;
 }
 
-export interface InternalRuleItem extends Omit<RuleItem, 'validator'> {
+export interface InternalRuleItem extends Omit<RuleItem, "validator"> {
   field?: string;
   fullField?: string;
   fullFields?: string[];
-  validator?: RuleItem['validator'] | ExecuteValidator;
+  validator?: RuleItem["validator"] | ExecuteValidator;
 }

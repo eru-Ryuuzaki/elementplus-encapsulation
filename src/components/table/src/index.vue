@@ -23,14 +23,27 @@
             <el-input size="small" v-model="scope.row[item.prop!]"></el-input>
           </template>
           <template v-else>
-            <template v-if="(scope.$index + scope.column.id) === currentEdit">
+            <template v-if="scope.$index + scope.column.id === currentEdit">
               <div style="display: flex">
-                <el-input size="small" v-model="scope.row[item.prop!]"></el-input>
+                <el-input
+                  size="small"
+                  v-model="scope.row[item.prop!]"
+                ></el-input>
                 <div>
-                  <slot name="cellEdit" v-if="$slots.cellEdit" :scope="scope"></slot>
+                  <slot
+                    name="cellEdit"
+                    v-if="$slots.cellEdit"
+                    :scope="scope"
+                  ></slot>
                   <div class="action-icon" v-else>
-                    <el-icon-check class="check" @click.stop="check(scope)"></el-icon-check>
-                    <el-icon-close class="close" @click.stop="close(scope)"></el-icon-close>
+                    <el-icon-check
+                      class="check"
+                      @click.stop="check(scope)"
+                    ></el-icon-check>
+                    <el-icon-close
+                      class="close"
+                      @click.stop="close(scope)"
+                    ></el-icon-close>
                   </div>
                 </div>
               </div>
@@ -61,7 +74,11 @@
     </el-table-column>
   </el-table>
 
-  <div v-if="pagination && !isLoading" class="pagination" :style="{ justifyContent }">
+  <div
+    v-if="pagination && !isLoading"
+    class="pagination"
+    :style="{ justifyContent }"
+  >
     <el-pagination
       v-model:currentPage="currentPage"
       :page-sizes="pageSizes"
@@ -74,22 +91,22 @@
   </div>
 </template>
 
-<script lang='ts' setup>
-import { PropType, computed, ref, watch, onMounted } from 'vue'
-import { TableOptions } from './types'
-import { toLine } from '../../../utils'
-import cloneDeep from 'lodash/cloneDeep'
+<script lang="ts" setup>
+import { PropType, computed, ref, watch, onMounted } from "vue";
+import { TableOptions } from "./types";
+import { toLine } from "../../../utils";
+import cloneDeep from "lodash/cloneDeep";
 
 let props = defineProps({
   // 表格配置选项
   options: {
     type: Array as PropType<TableOptions[]>,
-    required: true
+    required: true,
   },
   // 表格数据
   data: {
     type: Array,
-    required: true
+    required: true,
   },
   // 加载文案
   elementLoadingText: {
@@ -105,7 +122,7 @@ let props = defineProps({
   },
   // 加载图标是svg
   elementLoadingSvg: {
-    type: String
+    type: String,
   },
   // 加载团是svg的配置
   elementLoadingSvgViewBox: {
@@ -114,128 +131,141 @@ let props = defineProps({
   // 编辑显示的图标
   editIcon: {
     type: String,
-    default: 'Edit'
+    default: "Edit",
   },
   // 是否可以编辑行
   isEditRow: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 编辑行按钮的标识
   editRowIndex: {
     type: String,
-    default: ''
+    default: "",
   },
   // 是否显示分页
   pagination: {
     type: Boolean,
-    default: false
+    default: false,
   },
   // 显示分页的对齐方式
   paginationAlign: {
-    type: String as PropType<'left' | 'center' | 'right'>,
-    default: 'left'
+    type: String as PropType<"left" | "center" | "right">,
+    default: "left",
   },
   // 当前是第几页
   currentPage: {
     type: Number,
-    default: 1
+    default: 1,
   },
   // 当前一页多少条数据
   pageSize: {
     type: Number,
-    default: 10
+    default: 10,
   },
   // 显示分页数据多少条的选项
   pageSizes: {
     type: Array,
-    default: () => [10, 20, 30, 40]
+    default: () => [10, 20, 30, 40],
   },
   // 数据总条数
   total: {
     type: Number,
-    default: 0
-  }
-})
+    default: 0,
+  },
+});
 
-let emits = defineEmits(['confirm', 'cancel', 'update:editRowIndex', 'size-change', 'current-change'])
+let emits = defineEmits([
+  "confirm",
+  "cancel",
+  "update:editRowIndex",
+  "size-change",
+  "current-change",
+]);
 
 // 分页的每一页数据变化
 let handleSizeChange = (val: number) => {
-  emits('size-change', val)
+  emits("size-change", val);
   // console.log(val)
-}
+};
 // 分页页数改变
 let handleCurrentChange = (val: number) => {
-  emits('current-change', val)
+  emits("current-change", val);
   // console.log(val)
-}
+};
 
 // 当前被点击的单元格的标识
-let currentEdit = ref<string>('')
+let currentEdit = ref<string>("");
 
 // 拷贝一份表格的数据
-let tableData = ref<any[]>(cloneDeep(props.data))
+let tableData = ref<any[]>(cloneDeep(props.data));
 // 拷贝一份按钮的标识
-let cloneEditRowIndex = ref<string>(props.editRowIndex)
+let cloneEditRowIndex = ref<string>(props.editRowIndex);
 // 监听的标识
-let watchData = ref<boolean>(false)
+let watchData = ref<boolean>(false);
 
 // 如果data的数据变了 要重新给tableData赋值
 // 只需要监听一次就可以了
-let stopWatchData =  watch(() => props.data, val => {
-  watchData.value = true
-  tableData.value = val
-  tableData.value.map(item => {
-    item.rowEdit = false
-  })
-  if (watchData.value) stopWatchData()
-}, { deep: true })
+let stopWatchData = watch(
+  () => props.data,
+  (val) => {
+    watchData.value = true;
+    tableData.value = val;
+    tableData.value.map((item) => {
+      item.rowEdit = false;
+    });
+    if (watchData.value) stopWatchData();
+  },
+  { deep: true }
+);
 
 // 监听
-watch(() => props.editRowIndex, val => {
-  if (val) cloneEditRowIndex.value = val
-})
+watch(
+  () => props.editRowIndex,
+  (val) => {
+    if (val) cloneEditRowIndex.value = val;
+  }
+);
 
 onMounted(() => {
-  tableData.value.map(item => {
-    item.rowEdit = false
-  })
-})
+  tableData.value.map((item) => {
+    item.rowEdit = false;
+  });
+});
 
 // 过滤操作项之后的配置
-let tableOption = computed(() => props.options.filter(item => !item.action))
+let tableOption = computed(() => props.options.filter((item) => !item.action));
 // 操作项
-let actionOption = computed(() => props.options.find(item => item.action))
+let actionOption = computed(() => props.options.find((item) => item.action));
 
 // 是否在加载中
-let isLoading = computed(() => !props.data || !props.data.length)
+let isLoading = computed(() => !props.data || !props.data.length);
 
 // 表格分页的排列方式
 let justifyContent = computed(() => {
-  if (props.paginationAlign === 'left') return 'flex-start'
-  else if (props.paginationAlign === 'right') return 'flex-end'
-  else return 'center'
-})
+  if (props.paginationAlign === "left") return "flex-start";
+  else if (props.paginationAlign === "right") return "flex-end";
+  else return "center";
+});
 
 // 点击编辑图标
 let clickEditIcon = (scope: any) => {
   // 会做一个判断 判断是否当前单元格被点击了
   // 拼接$index和column的id
-  currentEdit.value = scope.$index + scope.column.id
+  currentEdit.value = scope.$index + scope.column.id;
   // console.log(currentEdit.value)
-}
+};
 
 // 点击确认
 let check = (scope: any) => {
-  emits('confirm', scope)
-  currentEdit.value = ''
-}
+  emits("confirm", scope);
+  currentEdit.value = "";
+};
 // 点击取消
 let close = (scope: any) => {
-  emits('cancel', scope)
-  currentEdit.value = ''
-}
+  emits("cancel", scope);
+  currentEdit.value = "";
+};
 
 // 点击行的事件
 let rowClick = (row: any, column: any) => {
@@ -243,21 +273,19 @@ let rowClick = (row: any, column: any) => {
   if (column.label === actionOption.value!.label) {
     if (props.isEditRow && cloneEditRowIndex.value === props.editRowIndex) {
       // 编辑行的操作
-      row.rowEdit = !row.rowEdit
+      row.rowEdit = !row.rowEdit;
       // 重置其他数据的rowEdit
-      tableData.value.map(item => {
-        if (item !== row) item.rowEdit = false
-      })
+      tableData.value.map((item) => {
+        if (item !== row) item.rowEdit = false;
+      });
       // 重置按钮的标识
-      if (!row.rowEdit) emits('update:editRowIndex', '')
+      if (!row.rowEdit) emits("update:editRowIndex", "");
     }
   }
-}
+};
 </script>
 
-
-
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .edit {
   width: 1em;
   height: 1em;
